@@ -1,0 +1,20 @@
+{
+  "name": "com.linkors.proxyapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
+  },
+  "author": "Kelvin",
+  "license": "ISC",
+  "dependencies": {
+    "anyproxy": "^4.0.14",
+    "commander": "^2.19.0",
+    "mkdirp-no-bin": "^0.5.1",
+    "node-cache": "^4.2.0",
+    "node-ip": "^0.1.2",
+    "rmdir": "^1.2.0"
+  }
+}
