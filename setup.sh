@@ -7,12 +7,12 @@ if which node > /dev/null
         sudo apt-get install -y nodejs
 
 echo Downloading poject files ...
-curl https://github.com/mastermoo/react-native-action-button/archive/master.zip -LO
+curl https://github.com/linkors/proxy-cache/archive/master.zip -LO
 sudo apt-get install zip unzip
 unzip master.zip -d ./proxy-cache
 
 echo Installing project dependencies ...
-cd proxy-cache/react-native-action-button-master
+cd proxy-cache/proxy-cache-master
 npm install
 ./node_modules/.bin/anyproxy-ca
 

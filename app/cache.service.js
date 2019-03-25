@@ -28,6 +28,7 @@ class Cache {
   get(key) {
     const value = this.cache.get(key);
     if (value) {
+      console.log("Returning value from cache ...")
       return Promise.resolve(value);
     }
     return Promise.reject("not found");

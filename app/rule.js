@@ -20,7 +20,6 @@ module.exports = function getRule(program) {
     return cache
       .get(key)
       .then(result => {
-        console.log(result);
         return new Promise(resolve => {
           resolve({ response: result });
         });
@@ -33,6 +32,14 @@ module.exports = function getRule(program) {
   };
 
   return {
+    *onError(requestDetail, error) {
+      console.log("Cannot reach server, returning from cache is available");
+      return getResponse(requestDetail.url, null);
+    },
+    *onConnectError(requestDetail, error) {
+      console.log("Cannot reach server, returning from cache is available");
+      return getResponse(requestDetail.url, null);
+    },
     *beforeSendResponse(requestDetail, responseDetail) {
       if (
         !program.filter ||

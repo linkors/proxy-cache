@@ -10,7 +10,7 @@
   "author": "Kelvin",
   "license": "ISC",
   "dependencies": {
-    "anyproxy": "^4.0.14",
+    "anyproxy": "^4.0.15",
     "commander": "^2.19.0",
     "mkdirp-no-bin": "^0.5.1",
     "node-cache": "^4.2.0",

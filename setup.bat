@@ -25,14 +25,14 @@ IF %NODE_VER% == null (
 
 IF NOT EXIST %BAT_DIR%\proxy-cache\NUL (
 	echo Downloading project files ...
-	START /WAIT powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/mastermoo/react-native-action-button/archive/master.zip', 'master.zip')"
+	START /WAIT powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/linkors/proxy-cache/archive/master.zip', 'master.zip')"
 	powershell -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('master.zip', 'proxy-cache'); }"
 	del master.zip
 ) ELSE (
 	echo Folder proxy-cache already exists
 )
 echo Installing all dependencies ...
-cd proxy-cache\react-native-action-button-master
+cd proxy-cache\proxy-cache-master
 call npm install
 echo Generating proxy CA ...
 call node_modules\.bin\anyproxy-ca

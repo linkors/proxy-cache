@@ -53,3 +53,6 @@ typings/
 
 # next.js build output
 .next
+
+#cache data
+data/
