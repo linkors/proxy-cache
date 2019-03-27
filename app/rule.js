@@ -1,8 +1,7 @@
-const CacheService = require("./cache.service");
+const colors = require('colors');
 
-module.exports = function getRule(program) {
+module.exports = function getRule(program, cache) {
   const ttl = parseInt(program.ttl);
-  const cache = new CacheService(ttl); // Create a new cache service instance
 
   const getOrSetCacheResponse = (key, val) => {
     return cache
@@ -20,6 +19,7 @@ module.exports = function getRule(program) {
     return cache
       .get(key)
       .then(result => {
+        console.log(colors.green.bold('Cache found! ') + 'Returning from cache ...');
         return new Promise(resolve => {
           resolve({ response: result });
         });
@@ -45,6 +45,8 @@ module.exports = function getRule(program) {
         !program.filter ||
         program.filter.split(",").some(f => requestDetail.url.includes(f))
       ) {
+
+        console.log('Request for ' + colors.blue.bold(requestDetail.url));
         if (responseDetail.response.statusCode === 200) {
           cache.set(requestDetail.url, responseDetail.response);
         }

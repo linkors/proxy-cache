@@ -1,4 +1,5 @@
 const cache = require("../lib/persistent-cache");
+const colors = require("colors");
 
 function clean(key) {
   const lastChar = key[key.length - 1];
@@ -15,7 +16,7 @@ function parseBack(key) {
 class Cache {
   constructor(ttlSeconds) {
     this.cache = new cache({
-      duration: ttlSeconds,
+      duration: ttlSeconds * 1000,
       base: "data",
       memory: true,
       persist: true,
@@ -39,18 +40,16 @@ class Cache {
   }
 
   set(key, value) {
-    console.log(clean(key))
     this.cache.put(clean(key), value, function (err) {
-      console.log("Error ==============================");
-      console.log(err);
+      if (err) {
+        console.log(colors.red("Error saving cache") + err);
+      }
     });
   }
 
   get(key) {
     return new Promise((resolve, reject) => {
       this.cache.get(clean(key), (err, value) => {
-        console.log("=====================");
-        console.log(value);
         if (value) {
           return resolve(value);
         }
@@ -78,8 +77,8 @@ class Cache {
     });
   }
 
-  flush() {
-    this.cache.unlink(function () { });
+  flush(cb) {
+    this.cache.unlink(cb);
   }
 }
 

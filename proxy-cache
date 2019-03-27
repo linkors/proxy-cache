@@ -9,7 +9,7 @@ program
   .option("-p, --port [value]", "proxy port", "8001")
   .option("-w, --web [value]", "web GUI port", "8002")
   .option(
-    "-f, --filter",
+    "-f, --filter <filter>",
     "List of url to be cached (comma separated), default no filter"
   )
   .option("-m, --mode <mode>", "Cache mode", /^(all|code|nonet)$/i, "all")
@@ -19,10 +19,12 @@ program
     "500"
   )
   .option("-t, --ttl <ttl>", "How long cache will be saved", "3600")
-  .option("-c, --clear", "Clear cache")
+  .option("-p, --persist", "Enable persist cache")
+  .option("-c, --clean", "Clear cache")
   .parse(process.argv);
 
-if (program.clear) {
+if (program.clean) {
+  return proxyApp.cleanCache();
 } else {
   return proxyApp.startProxy(program);
 }
