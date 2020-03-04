@@ -12,19 +12,23 @@ program
     "-f, --filter <filter>",
     "List of url to be cached (comma separated), default no filter"
   )
-  .option("-m, --mode <mode>", "Cache mode", /^(all|code|nonet)$/i, "all")
+  .option("-m, --mode <mode>", "Cache mode", /^(all|code)$/i, "all")
   .option(
     "-c, --code <code>",
     "Http code if use mode 'code' (comma separated)",
     "500"
   )
   .option("-t, --ttl <ttl>", "How long cache will be saved", "3600")
-  .option("-p, --persist", "Enable persist cache")
-  .option("-c, --clean", "Clear cache")
+  .option("-s, --setglobalproxy", "if you want to automatically set global proxy on start")
+  .option("--persist", "Enable persist cache")
+  .option("--clean", "Clear cache")
   .parse(process.argv);
 
+
+const app = proxyApp.initProxy(program);
+
 if (program.clean) {
-  return proxyApp.cleanCache();
+  return app.cleanCache();
 } else {
-  return proxyApp.startProxy(program);
+  return app.start();
 }

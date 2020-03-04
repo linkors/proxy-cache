@@ -2,16 +2,34 @@ const AnyProxy = require("anyproxy");
 const getRule = require("./rule");
 const colors = require('colors');
 
+function setGlobalProxy(host, port) {
+  console.log(colors.bold(`${colors.green('Set')} global proxy...`));
+  AnyProxy.utils.systemProxyMgr.enableGlobalProxy(host, port);
+  AnyProxy.utils.systemProxyMgr.enableGlobalProxy(host, port, 'https');
+}
+
+function unsetGlobalProxy() {
+  console.log(colors.bold(`${colors.yellow('Unset')} global proxy...`));
+  AnyProxy.utils.systemProxyMgr.disableGlobalProxy();
+  AnyProxy.utils.systemProxyMgr.disableGlobalProxy('https');
+}
+
+let cache = null;
+let program = {};
 module.exports = {
-  startProxy: function (program) {
+  initProxy: function (program) {
     const CacheService = program.persist ? require("./memo.service") : require("./cache.service");
-    const cache = new CacheService(program.ttl);
+    cache = new CacheService(program.ttl);
+    return this;
+  },
+  start: function () {
+    if (!cache) return console.log(`${colors.red('Proxy has not been initialized!')}, Please call ${colors.bold('initProxy')}`)
     const options = {
-      port: 8001,
+      port: program.port,
       rule: getRule(program, cache),
       webInterface: {
         enable: true,
-        webPort: 8002
+        webPort: program.web
       },
       throttle: 10000,
       forceProxyHttps: true,
@@ -36,11 +54,16 @@ module.exports = {
     });
     proxyServer.start();
 
+    if (program['setglobalproxy']) {
+      setGlobalProxy('localhost', options.port);
+    }
+
     // Exit by ctrl+c
     process.on("SIGINT", () => {
       console.log(colors.bold('Stopping proxy server ...'));
       try {
         proxyServer && proxyServer.close();
+        unsetGlobalProxy();
       } catch (e) {
         console.error(e);
       }
@@ -48,7 +71,6 @@ module.exports = {
     });
   },
   cleanCache: function () {
-    const cache = new CacheService();
     console.log('Clearing ' + colors.yellow('cache') + '...');
     cache.flush(function () {
       console.log('Cache ' + colors.yellow('cleared'));
