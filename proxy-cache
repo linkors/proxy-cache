@@ -20,7 +20,7 @@ program
   )
   .option("-t, --ttl <ttl>", "How long cache will be saved", "3600")
   .option("-s, --setglobalproxy", "if you want to automatically set global proxy on start")
-  .option("--persist", "Enable persist cache")
+  .option("--nopersist", "Disable persistence cache")
   .option("--clean", "Clear cache")
   .parse(process.argv);
 

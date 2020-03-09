@@ -15,21 +15,23 @@ function unsetGlobalProxy() {
 }
 
 let cache = null;
-let program = {};
+let _program = {};
 module.exports = {
   initProxy: function (program) {
-    const CacheService = program.persist ? require("./memo.service") : require("./cache.service");
+    const CacheService = program.nopersist ? require("./cache.service") : require("./memo.service");
     cache = new CacheService(program.ttl);
+    _program = program;
     return this;
   },
   start: function () {
     if (!cache) return console.log(`${colors.red('Proxy has not been initialized!')}, Please call ${colors.bold('initProxy')}`)
+
     const options = {
-      port: program.port,
-      rule: getRule(program, cache),
+      port: _program.port | 8001,
+      rule: getRule(_program, cache),
       webInterface: {
         enable: true,
-        webPort: program.web
+        webPort: _program.web | 8002
       },
       throttle: 10000,
       forceProxyHttps: true,
@@ -45,7 +47,7 @@ module.exports = {
         colors.bold("Please set your proxy to ") +
         colors.green.bold.underline(ip.address()) +
         colors.bold(" with port ") +
-        colors.green.bold.underline(program.port) + "\n\n\n"
+        colors.green.bold.underline(options.port) + "\n\n\n"
       );
       /* */
     });
@@ -54,7 +56,7 @@ module.exports = {
     });
     proxyServer.start();
 
-    if (program['setglobalproxy']) {
+    if (_program['setglobalproxy']) {
       setGlobalProxy('localhost', options.port);
     }
 
@@ -63,7 +65,8 @@ module.exports = {
       console.log(colors.bold('Stopping proxy server ...'));
       try {
         proxyServer && proxyServer.close();
-        unsetGlobalProxy();
+        if (_program['setglobalproxy'])
+          unsetGlobalProxy();
       } catch (e) {
         console.error(e);
       }
